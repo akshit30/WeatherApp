@@ -1,5 +1,6 @@
 package com.example.weatherapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.security.identity.IdentityCredentialException;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -68,8 +70,37 @@ public class MainActivity extends AppCompatActivity {
         cityName=getCityName(location.getLongitude(), location.getLatitude());
         getWeatherInfo(cityName);
 
+        searchIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String city = cityEdt.getText().toString();
+                if(city.isEmpty()){
+                    Toast.makeText(MainActivity.this,"please enter city name",Toast.LENGTH_SHORT).show();
+                }else{
+                    cityNameTV.setText(cityName);
+                    getWeatherInfo(city);
+                }
+            }
+        });
+
 
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode==PERMISSION_CODE)
+        {
+            if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED)
+            {
+                Toast.makeText(MainActivity.this,"Permissions Granted",Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(MainActivity.this,"please provide permissions",Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+    }
+
     private String getCityName(double longitude, double latitude)
     {
         String cityName = "Not Found";
