@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MainActivity.this,"please enter valid city name...",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this,"please enter correct city name...",Toast.LENGTH_SHORT).show();
             }
         });
         requestQueue.add(jsonObjectRequest);
