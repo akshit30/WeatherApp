@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.security.identity.IdentityCredentialException;
@@ -79,8 +80,21 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},PERMISSION_CODE);
         }
         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        cityName=getCityName(location.getLongitude(), location.getLatitude());
+        Log.d("Location", "Location: " + location);
+        if (location != null) {
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
+            Log.d("Location", "Latitude: " + latitude + ", Longitude: " + longitude);
+            cityName = getCityName(longitude, latitude);
+            Log.d("Location", "City Name: " + cityName);
+        } else {
+            Log.d("Location", "Last known location is null");
+        }
+
         getWeatherInfo(cityName);
+
+
+
 
         searchIV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,30 +127,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private String getCityName(double longitude, double latitude)
-    {
+    private String getCityName(double longitude, double latitude) {
         String cityName = "Not Found";
-        Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
-        try{
-            List<Address> addresses = gcd.getFromLocation(latitude,longitude,10);
-            for(Address adr: addresses){
-                if(adr!=null)
-                {
-                    String city= adr.getLocality();
-                    if(city!=null && !city.equals("")){
-                        cityName=city;
-                    }else{
-                        Log.d("TAG","City Not Found");
-                        Toast.makeText(this,"User city not found",Toast.LENGTH_SHORT).show();
-                    }
+        Geocoder gcd = new Geocoder(getApplicationContext(), Locale.getDefault());
+        try {
+            List<Address> addresses = gcd.getFromLocation(latitude, longitude, 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                Address address = addresses.get(0);
+                String city = address.getLocality();
+                if (city != null && !city.isEmpty()) {
+                    cityName = city;
+                } else {
+                    Log.d("TAG", "City Not Found");
+                    Toast.makeText(this, "User city not found", Toast.LENGTH_SHORT).show();
                 }
+            } else {
+                Log.d("TAG", "No address found");
+                Toast.makeText(this, "No address found", Toast.LENGTH_SHORT).show();
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return cityName;
-
     }
+
 
     private void getWeatherInfo(String cityName)
     {
