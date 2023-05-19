@@ -139,11 +139,11 @@ public class MainActivity extends AppCompatActivity {
                     cityName = city;
                 } else {
                     Log.d("TAG", "City Not Found");
-                    Toast.makeText(this, "User city not found", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, " no User city  found", Toast.LENGTH_SHORT).show();
                 }
             } else {
                 Log.d("TAG", "No address found");
-                Toast.makeText(this, "No address found", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "No address ", Toast.LENGTH_SHORT).show();
             }
         } catch (IOException e) {
             e.printStackTrace();
